@@ -79,10 +79,14 @@ func testMdbInsert(){
 	preprocess.MdbInsert("E:\\yellow_tripdata_2015-06.csv\\mongo\\MongoDB")
 }
 
+func testSmallPointAndTrip(){
+	spat := preprocess.NewSmallPointAndTrip(39.8, 40.15, 116.35, 116.7)
+	spat.StorePoint()
+}
+
 
 // 估计行车时间
 func travelTimeEstimate() {
-	defer estimate.CloseSession()
 	b := make([]int64, 5)
 	var sum int64 = 0.0
 	var sumRel float64 = 0.0 // 相对误差总和
@@ -111,10 +115,12 @@ func travelTimeEstimate() {
 	fmt.Println("平均相对误差为：" + fmt.Sprintf("%v", sumRel / float64(sum) * 100.0) + "%")
 }
 func main() {
+	defer estimate.CloseSession()
 	//trip.DropTrip("trip", 0, 23)
 	//travelTimeEstimate()
 	//trip.MdbTrip("E:\\15年5-6月黄车数据\\yellow_tripdata_2015-05.csv\\yellow_tripdata_2015-05.csv", "test")
 	//testOpenStreetMap()
 	//testMapPre()
-	testMdbInsert()
+	//testMdbInsert()
+	testSmallPointAndTrip()
 }

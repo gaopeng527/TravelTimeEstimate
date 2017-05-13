@@ -93,6 +93,7 @@ func StoreDay(start int, end int) {
 	}
 }
 
+// 读取CSV格式的打车数据并存入mongodb数据库
 func MdbTrip(filePath string, collName string) {
 	file, err := os.Open(filePath)
 	if err != nil {

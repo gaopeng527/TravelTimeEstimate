@@ -33,7 +33,7 @@ func NewAlgorithm(needMergeEquivalentTrip bool) *Algorithm {
 // 初始化路径计算，同时对trip进行第二次的过滤
 func (algorithm *Algorithm) Preprocess(tripi string) {
 	if algorithm.dij == nil {
-		findStreet := NewFindStreet()
+		findStreet := NewFindStreet("mapIntersection")
 		algorithm.lineSet = findStreet.GetStreet()
 		algorithm.pointSet = findStreet.GetPointSet()
 		mymap := NewMapLoc2_2(algorithm.pointSet, algorithm.lineSet)

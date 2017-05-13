@@ -7,19 +7,21 @@ import (
 type FindStreet struct {
 	lineSet map[int64]*defclass.Line
 	pointSet map[int64]*defclass.Point
+	arcCollName string
 }
 
-func NewFindStreet() *FindStreet {
-	return &FindStreet{}
+func NewFindStreet(arcCollName string) *FindStreet {
+	return &FindStreet{arcCollName: arcCollName}
 }
 
+// 从集合中获取地图线段信息
 func (findStreet *FindStreet) GetStreet() map[int64]*defclass.Line {
 	findStreet.lineSet = make(map[int64]*defclass.Line, 0)
 	findStreet.pointSet = make(map[int64]*defclass.Point, 0)
 	session := GetSesson()
 	defer session.Close()
 	db := session.DB(MAP_DB)
-	dbcoll := db.C("mapIntersection")
+	dbcoll := db.C(findStreet.arcCollName)
 	iter := dbcoll.Find(nil).Iter()
 	p := defclass.NewPoint0()
 	for iter.Next(p) {
