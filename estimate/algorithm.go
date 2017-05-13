@@ -120,7 +120,7 @@ func (algorithm *Algorithm) Compute(tripi string, b []int64) float64 {
 		var et float64 = 0.0	// 估计的旅途行车时间
 		for _, v := range path {
 			id := v.(int64)
-			et += algorithm.lineSet[id].TravelTime
+			et += algorithm.lineSet[id].GetTravelTime()
 			if _, ok := ts[id]; ok {
 				ts[id].Add(trip)
 			} else {
@@ -157,9 +157,10 @@ func (algorithm *Algorithm) Compute(tripi string, b []int64) float64 {
 			}
 			mapos[id] = os
 			if os < 0 {
-				algorithm.lineSet[id].TravelTime = algorithm.lineSet[id].TravelTime * mapk[id]
+				algorithm.lineSet[id].SetTravelTime(algorithm.lineSet[id].GetTravelTime() * mapk[id])
 			} else if os > 0 {
-				algorithm.lineSet[id].TravelTime = algorithm.lineSet[id].TravelTime / mapk[id]
+
+				algorithm.lineSet[id].SetTravelTime(algorithm.lineSet[id].GetTravelTime() / mapk[id])
 			}
 		}
 		var newRelErr float64 = 0.0 // 新的相对误差
@@ -170,7 +171,7 @@ func (algorithm *Algorithm) Compute(tripi string, b []int64) float64 {
 			var newet float64 = 0.0 // 新估计的旅途行车时间
 			for _, v := range path {
 				id := v.(int64)
-				newet += algorithm.lineSet[id].TravelTime
+				newet += algorithm.lineSet[id].GetTravelTime()
 			}
 			newetSlice[i] = newet
 			newRelErr += math.Abs(newet - trip.GetTravelTime()) / trip.GetTravelTime()
@@ -187,9 +188,9 @@ func (algorithm *Algorithm) Compute(tripi string, b []int64) float64 {
 		} else {	// 新的估计比之前的坏
 			for id, _ := range ts {
 				if mapos[id] < 0 {
-					algorithm.lineSet[id].TravelTime = algorithm.lineSet[id].TravelTime / mapk[id]
+					algorithm.lineSet[id].SetTravelTime(algorithm.lineSet[id].GetTravelTime() / mapk[id])
 				} else if mapos[id] > 0 {
-					algorithm.lineSet[id].TravelTime = algorithm.lineSet[id].TravelTime * mapk[id]
+					algorithm.lineSet[id].SetTravelTime(algorithm.lineSet[id].GetTravelTime() * mapk[id])
 				} else {
 					continue
 				}
@@ -235,14 +236,14 @@ func (algorithm *Algorithm) Remain(i int) {
 	// 第一次计算
 	nmap := make(map[int64][]int64, 0)
 	for _, id := range nTripStreet {
-		sid := algorithm.lineSet[id].P[0].Id
-		eid := algorithm.lineSet[id].P[1].Id
+		sid := algorithm.lineSet[id].GetP()[0].Id
+		eid := algorithm.lineSet[id].GetP()[1].Id
 		slice := make([]int64, 0)
 		ids := algorithm.tripStreet.Elements()
 		for _, v := range ids {
 			streetId := v.(int64)
-			sid1 := algorithm.lineSet[streetId].P[0].Id
-			eid1 := algorithm.lineSet[streetId].P[1].Id
+			sid1 := algorithm.lineSet[streetId].GetP()[0].Id
+			eid1 := algorithm.lineSet[streetId].GetP()[1].Id
 			if sid1==sid || sid1==eid || eid1==sid || eid1==eid {
 				slice = append(slice, streetId)
 			}
@@ -264,24 +265,24 @@ func (algorithm *Algorithm) Remain(i int) {
 		}
 		var v float64 = 0.0	// 道路速度
 		for _, id := range nmap[maxid] {
-			if algorithm.lineSet[id].Length == 0.0 && algorithm.lineSet[id].TravelTime == 0.0 {	// 避免NaN的出现
+			if algorithm.lineSet[id].Length == 0.0 && algorithm.lineSet[id].GetTravelTime() == 0.0 {	// 避免NaN的出现
 				continue
 			}
-			v += algorithm.lineSet[id].Length / algorithm.lineSet[id].TravelTime
+			v += algorithm.lineSet[id].Length / algorithm.lineSet[id].GetTravelTime()
 		}
 		if v == 0.0 {	// 不再计算保留原来的值
 			delete(nmap, maxid)
 			continue
 		}
 		v /= float64(len(nmap[maxid]))
-		algorithm.lineSet[maxid].TravelTime = algorithm.lineSet[maxid].Length / v
+		algorithm.lineSet[maxid].SetTravelTime(algorithm.lineSet[maxid].Length / v)
 		delete(nmap, maxid)	// 移除已经计算的
 		// 更新nmap中已经计算过切片中的道路id
-		sid := algorithm.lineSet[maxid].P[0].Id
-		eid := algorithm.lineSet[maxid].P[1].Id
+		sid := algorithm.lineSet[maxid].GetP()[0].Id
+		eid := algorithm.lineSet[maxid].GetP()[1].Id
 		for id, _ := range nmap {
-			sid1 := algorithm.lineSet[id].P[0].Id
-			eid1 := algorithm.lineSet[id].P[1].Id
+			sid1 := algorithm.lineSet[id].GetP()[0].Id
+			eid1 := algorithm.lineSet[id].GetP()[1].Id
 			if sid1 == sid || sid1 == eid || eid1 == sid || eid1 == eid{
 				nmap[id] = append(nmap[id], maxid)
 			}
@@ -340,7 +341,7 @@ func (algorithm *Algorithm) Estimate(i int, b []int64) float64 {
 		var length float64 = 0.0 // 路径长度
 		for _, v := range path {
 			id := v.(int64)
-			et += algorithm.lineSet[id].TravelTime
+			et += algorithm.lineSet[id].GetTravelTime()
 			length += algorithm.lineSet[id].Length
 		}
 		if math.Abs(length - tripData.Distance) > tripData.Distance * ERROR {

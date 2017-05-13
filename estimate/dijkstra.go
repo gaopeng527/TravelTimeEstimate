@@ -62,7 +62,7 @@ func NewNode4(to int64, len float64, pathId list.List, pathvId list.List) *Node 
 func (dij *Dijkstra) buildMap() {
 	// 初始化邻接矩阵，无向图
 	for _, line := range dij.mapLoc.LineSet {
-		p := line.P
+		p := line.GetP()
 		if _, ok := dij.box[p[0].Id]; ok {
 			if !dij.box[p[0].Id].Contains(p[1].Id){
 				dij.box[p[0].Id].Add(NewEdge(p[1].Id, line.Length, line.Sid))

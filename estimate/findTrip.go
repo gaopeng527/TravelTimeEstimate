@@ -41,8 +41,9 @@ func FindIntersection(lat float64, lon float64) *defclass.Point {
 	p := defclass.NewPoint0()
 	// 从中找出最近的
 	for iter.Next(p) {
-		latt := p.Gis["lat"].(float64)
-		lonn := p.Gis["lon"].(float64)
+		m := p.Gis.Map()
+		latt := m["lat"].(float64)
+		lonn := m["lon"].(float64)
 		dis := Distance(lat, lon, latt, lonn)
 		if dis < min {
 			min = dis

@@ -71,6 +71,14 @@ func testOpenStreetMap() {
 	preprocess.ParseBigXML("E:\\TaxiQueryGenerator\\beijing_china.osm", "E:\\yellow_tripdata_2015-06.csv\\mongo\\MapPre")
 }
 
+func testMapPre() {
+	preprocess.MapPre("E:\\yellow_tripdata_2015-06.csv\\mongo\\MapPre", "E:\\yellow_tripdata_2015-06.csv\\mongo\\MongoDB")
+}
+
+func testMdbInsert(){
+	preprocess.MdbInsert("E:\\yellow_tripdata_2015-06.csv\\mongo\\MongoDB")
+}
+
 
 // 估计行车时间
 func travelTimeEstimate() {
@@ -106,5 +114,7 @@ func main() {
 	//trip.DropTrip("trip", 0, 23)
 	//travelTimeEstimate()
 	//trip.MdbTrip("E:\\15年5-6月黄车数据\\yellow_tripdata_2015-05.csv\\yellow_tripdata_2015-05.csv", "test")
-	testOpenStreetMap()
+	//testOpenStreetMap()
+	//testMapPre()
+	testMdbInsert()
 }
