@@ -36,7 +36,7 @@ func testDijkstra(){
 }
 
 func testFindStreet(){
-	findStreet := estimate.NewFindStreet()
+	findStreet := estimate.NewFindStreet("mapIntersection")
 	lineSet := findStreet.GetStreet()
 	pointSet := findStreet.GetPointSet()
 	for _, line := range lineSet {
@@ -84,6 +84,10 @@ func testSmallPointAndTrip(){
 	spat.StorePoint()
 }
 
+func testConnected(){
+	connected := preprocess.NewConnected()
+	connected.StoreMaxConnect("mapPointSmall", "mapIntersection")
+}
 
 // 估计行车时间
 func travelTimeEstimate() {
@@ -122,5 +126,6 @@ func main() {
 	//testOpenStreetMap()
 	//testMapPre()
 	//testMdbInsert()
-	testSmallPointAndTrip()
+	//testSmallPointAndTrip()
+	testConnected()
 }
